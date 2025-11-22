@@ -1,0 +1,27 @@
+/* 1️⃣ Google Fonts d'abord */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* 2️⃣ Ensuite seulement Tailwind v4 */
+@import "tailwindcss";
+
+/* 3️⃣ Option Tailwind v4 : déclarer la font dans le thème */
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
+               "Helvetica Neue", sans-serif;
+}
+
+/* 4️⃣ Styles globaux légers */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+}
