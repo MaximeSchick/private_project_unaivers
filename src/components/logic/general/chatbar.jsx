@@ -6,40 +6,51 @@ import { createChatWebSocket } from "../../../services/websocket";
 export default function ChatBarLogic({
   sessionId,
   userRole = "player",
-  placeholder = "Décris ton action...",
+  placeholder = "Decris ton action...",
 }) {
-  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [socket, setSocket] = useState(null);
   const [animateChatInput, setAnimateChatInput] = useState(false);
 
   const isSpectator = userRole === "spectator";
 
-  // Connexion WebSocket + gestion des messages
   useEffect(() => {
-    if (!sessionId) return;
+    // MODE DEMO : pas de WebSocket pour la session "demo-session"
+    if (!sessionId || sessionId === "demo-session") {
+      setSocket(null);
+      return;
+    }
 
-    const ws = createChatWebSocket(sessionId);
+    const ws = createChatWebSocket({
+      sessionId,
+      onOpen: () => {
+        console.log("WebSocket ouvert");
+      },
+      onMessage: (event) => {
+        // a brancher sur l'UI si besoin d'historique de chat
+        console.debug("Message recu", event.data);
+      },
+      onClose: () => {
+        console.log("WebSocket ferme");
+      },
+      onError: (err) => {
+        console.warn("WebSocket erreur", err);
+      },
+    });
+
     setSocket(ws);
 
-    ws.onmessage = (event) => {
-      const data = event.data;
-      setMessages((prev) => [...prev, data]);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket closed");
-    };
-
     return () => {
-      ws.close();
+      ws?.close();
+      setSocket(null);
     };
   }, [sessionId]);
 
   function handleSubmit(e) {
     e.preventDefault();
     const trimmed = inputValue.trim();
-    if (!socket || !trimmed || isSpectator) return;
+    const isReady = socket && socket.readyState === WebSocket.OPEN;
+    if (!isReady || !trimmed || isSpectator) return;
 
     socket.send(JSON.stringify({ content: trimmed }));
     setInputValue("");
@@ -62,7 +73,6 @@ export default function ChatBarLogic({
 
   return (
     <ChatBarUI
-      messages={messages}
       inputValue={inputValue}
       onInputChange={(e) => setInputValue(e.target.value)}
       onSubmit={handleSubmit}

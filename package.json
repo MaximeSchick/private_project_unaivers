@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nauverse/react-aurora-background": "^1.0.12",
     "@tailwindcss/vite": "^4.1.17",
     "motion": "^12.23.24",
     "react": "^19.2.0",
