@@ -9,8 +9,8 @@ export default function Orb({
   primaryColor,
   secondaryColor,
 }) {
-  const basePrimary = primaryColor || "rgba(255, 120, 120, 0.9)";
-  const baseSecondary = secondaryColor || "rgba(255, 180, 180, 0.8)";
+  const basePrimary = primaryColor || "rgba(255, 120, 120, 1)";
+  const baseSecondary = secondaryColor || "rgba(255, 180, 180, 1)";
 
   // vitesses différentes selon le mode
   const speedMap = {
@@ -53,7 +53,7 @@ export default function Orb({
           @keyframes ai-orb-pulse {
             0%, 100% {
               transform: scale(1);
-              opacity: 0.9;
+              opacity: 1;
             }
             50% {
               transform: scale(1.08);
@@ -65,11 +65,11 @@ export default function Orb({
             background-image:
               repeating-linear-gradient(
                 120deg,
-                var(--orb-color1, rgba(255, 120, 120, 0.9)) 0%,
-                var(--orb-color2, rgba(255, 180, 180, 0.8)) 10%,
-                var(--orb-color1, rgba(255, 120, 120, 0.9)) 20%,
-                rgba(255, 80, 80, 0.95) 30%,
-                var(--orb-color2, rgba(255, 180, 180, 0.8)) 40%
+                var(--orb-color1, rgba(245, 92, 92, 1)) 0%,
+                var(--orb-color2, rgba(247, 192, 192, 1)) 10%,
+                var(--orb-color1, rgba(212, 54, 54, 1)) 20%,
+                rgba(241, 62, 62, 1) 30%,
+                var(--orb-color2, rgba(253, 212, 212, 1)) 40%
               );
             background-size: 220% 220%;
             background-position: 50% 50%;
@@ -94,17 +94,17 @@ export default function Orb({
       >
         <div
           className={cn(
-            "relative w-full h-full rounded-full bg-black/90 overflow-hidden",
+            "relative w-full h-full rounded-full bg-transparent overflow-hidden",
             "transition-[box-shadow,background-color] duration-500 ease-out"
           )}
           style={{
             ...styleVars,
             boxShadow:
               mode === "speaking"
-                ? "0 0 40px rgba(248,113,113,0.8)"
+                ? "0 0 40px rgba(219, 83, 83, 1)"
                 : mode === "thinking"
-                ? "0 0 30px rgba(244,114,182,0.7)"
-                : "0 0 24px rgba(248,113,113,0.4)",
+                ? "0 0 30px rgba(238, 194, 200, 1)"
+                : "0 0 24px rgba(228, 97, 97, 1)",
           }}
         >
           <div className="absolute -inset-[30%] rounded-full ai-orb-aurora-layer" />

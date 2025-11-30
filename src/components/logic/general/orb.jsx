@@ -52,7 +52,7 @@ export default function OrbLogic({
     modeStyles[mode] || modeStyles.idle || DEFAULT_MODE_STYLES.idle;
 
   // Zone reservee pour garder le chat fixe et permettre ~3 bulles sous l'orbe
-  const bubbleZoneHeight = Math.max(size * 0.9, 100);
+  const bubbleZoneHeight = Math.max(size * 0.7, 100);
   const gapBetweenOrbAndBubbles = Math.max(10, size * 0.06);
   const reservedHeight = size + bubbleZoneHeight;
 

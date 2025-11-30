@@ -5,7 +5,7 @@ import { cn } from "../../../lib/utils";
 export default function BubbleDialogueUI({
   messages,
   className,
-  textColorClass = "text-rose-200", // rouge clair fixe
+  textColorClass = "text-white/80", // rouge clair fixe
 }) {
   if (!messages || messages.length === 0) return null;
 
@@ -49,7 +49,7 @@ export default function BubbleDialogueUI({
 
       <div
         className={cn(
-          "flex flex-col items-center justify-start gap-2 w-full mt-3",
+          "flex flex-col items-center justify-start gap-2 w-full mt-4",
           className
         )}
       >
@@ -58,8 +58,8 @@ export default function BubbleDialogueUI({
             key={m.id}
             className={cn(
               "inline-flex max-w-2xl self-center origin-top",
-              "rounded-3xl border border-white/10 bg-black/40",
-              "backdrop-blur-md px-5 py-3 mt-1 shadow-[0_0_20px_rgba(0,0,0,0.7)]",
+              "rounded-3xl border border-white/10 bg-black/60",
+              "backdrop-blur-md px-5 py-3 mt-1",
               m.isFading ? "bubble-dialogue-exit" : "bubble-dialogue-enter"
             )}
             style={{ zIndex: messages.length - idx }}

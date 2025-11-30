@@ -14,6 +14,7 @@ export default function ChatBarLogic({
 
   const isSpectator = userRole === "spectator";
 
+  // WebSocket
   useEffect(() => {
     // MODE DEMO : pas de WebSocket pour la session "demo-session"
     if (!sessionId || sessionId === "demo-session") {
@@ -27,7 +28,7 @@ export default function ChatBarLogic({
         console.log("WebSocket ouvert");
       },
       onMessage: (event) => {
-        // a brancher sur l'UI si besoin d'historique de chat
+        // à brancher sur l'UI si besoin d'historique de chat
         console.debug("Message recu", event.data);
       },
       onClose: () => {
@@ -46,6 +47,18 @@ export default function ChatBarLogic({
     };
   }, [sessionId]);
 
+  // Gestion de l’animation de glow
+  useEffect(() => {
+    if (!animateChatInput) return;
+
+    // durée alignée sur l’anim CSS (~1.2s)
+    const t = setTimeout(() => {
+      setAnimateChatInput(false);
+    }, 1200);
+
+    return () => clearTimeout(t);
+  }, [animateChatInput]);
+
   function handleSubmit(e) {
     e.preventDefault();
     const trimmed = inputValue.trim();
@@ -55,8 +68,8 @@ export default function ChatBarLogic({
     socket.send(JSON.stringify({ content: trimmed }));
     setInputValue("");
 
+    // lance le glow + dégradé
     setAnimateChatInput(true);
-    setTimeout(() => setAnimateChatInput(false), 180);
   }
 
   function handleKeyDown(e) {

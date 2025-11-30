@@ -13,7 +13,7 @@ export default function InfoSecurity() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="text-white/70 hover:text-white transition-colors duration-200
-                   p-2 rounded-full flex items-center justify-center bg-black/20 hover:bg-white/10 cursor-pointer"
+                   p-2 rounded-full flex items-center justify-center cursor-pointer"
       >
         <i className="fa-regular fa-shield-heart text-2xl"></i>
       </button>
@@ -21,7 +21,7 @@ export default function InfoSecurity() {
       {/* Infobulle */}
       {open && (
         <div
-          className="absolute left-12 bottom-0 w-64 p-3 rounded-xl 
+          className="absolute left-12 bottom-6 w-64 p-3 rounded-xl 
                      bg-black/80 text-white text-xs border border-white/20 
                      backdrop-blur-lg shadow-lg"
         >
