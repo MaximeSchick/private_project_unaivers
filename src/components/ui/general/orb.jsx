@@ -1,6 +1,7 @@
 // src/components/ui/general/orb.jsx
 import React from "react";
 import { cn } from "../../../lib/utils";
+import { ORB_MODE_STYLES } from "./orb-mode-styles";
 
 export default function Orb({
   className,
@@ -9,8 +10,9 @@ export default function Orb({
   primaryColor,
   secondaryColor,
 }) {
-  const basePrimary = primaryColor || "rgba(255, 120, 120, 1)";
-  const baseSecondary = secondaryColor || "rgba(255, 180, 180, 1)";
+  const fallback = ORB_MODE_STYLES[mode] || ORB_MODE_STYLES.idle;
+  const basePrimary = primaryColor || fallback.primary;
+  const baseSecondary = secondaryColor || fallback.secondary;
 
   // vitesses différentes selon le mode
   const speedMap = {

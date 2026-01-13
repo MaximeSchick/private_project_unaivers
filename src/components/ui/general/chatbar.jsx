@@ -24,11 +24,17 @@ export default function ChatBarUI({
   onSubmit,
   onKeyDown,
   onAiClick,
+  onToggleView,
+  showToggleView = false,
+  toggleDisabled = false,
+  toggleLabel = "Toggle view",
   userRole = "player",
   animateChatInput = false,
   placeholder = "Decris ton action...",
+  showAiButton = true,
 }) {
   const isSpectator = userRole === "spectator";
+  const toggleIsDisabled = isSpectator || toggleDisabled;
 
   return (
     <>
@@ -114,16 +120,33 @@ export default function ChatBarUI({
 
                 {/* Boutons droite */}
                 <div className="flex space-x-2">
-                  <button
-                    type="button"
-                    onClick={onAiClick}
-                    disabled={isSpectator}
-                    className={`bg-black/50 rounded-full p-2 hover:bg-white/10 transition-colors duration-200 text-white/80 border border-white/10 ${
-                      isSpectator ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                    }`}
-                  >
-                    <i className="fa-regular fa-bolt text-xl pt-1" />
-                  </button>
+                  {showToggleView && (
+                    <button
+                      type="button"
+                      onClick={onToggleView}
+                      disabled={toggleIsDisabled}
+                      title={toggleLabel}
+                      aria-label={toggleLabel}
+                      className={`bg-black/50 rounded-full p-2 hover:bg-white/10 transition-colors duration-200 text-white/80 border border-white/10 ${
+                        toggleIsDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      }`}
+                    >
+                      <i className="fa-regular fa-comments text-xl pt-1" />
+                    </button>
+                  )}
+
+                  {showAiButton && (
+                    <button
+                      type="button"
+                      onClick={onAiClick}
+                      disabled={isSpectator}
+                      className={`bg-black/50 rounded-full p-2 hover:bg-white/10 transition-colors duration-200 text-white/80 border border-white/10 ${
+                        isSpectator ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      }`}
+                    >
+                      <i className="fa-regular fa-bolt text-xl pt-1" />
+                    </button>
+                  )}
 
                   <button
                     type="submit"

@@ -3,37 +3,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import OrbLogic from "./orb";
 import { TEST_DIALOGUE_LINES } from "../../ui/general/test/dialogue";
 import { createChatWebSocket } from "../../../services/websocket";
+import { extractTextFromEvent, getRandomDelay, getRandomLine } from "../../../lib/chat-utils";
 
 const DEMO_FIRST_DELAY = 1000; // 2s avant le premier message
 const DEMO_MIN_DELAY = 1000; // 10s
 const DEMO_MAX_DELAY = 14000; // 14s
-
-function getRandomDelay() {
-  return DEMO_MIN_DELAY + Math.random() * (DEMO_MAX_DELAY - DEMO_MIN_DELAY);
-}
-
-function getRandomLine(lines) {
-  if (!Array.isArray(lines) || lines.length === 0) return "";
-  const index = Math.floor(Math.random() * lines.length);
-  return lines[index];
-}
-
-function extractTextFromEvent(event) {
-  const raw = event?.data ?? event;
-  if (typeof raw !== "string") return null;
-
-  try {
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed.content === "string") return parsed.content;
-    if (parsed && typeof parsed.message === "string") return parsed.message;
-    if (typeof parsed === "string") return parsed;
-  } catch {
-    // raw n'est pas du JSON, on retourne la chaine brute
-    return raw;
-  }
-
-  return null;
-}
 
 export default function DialogueOrb({
   mode = "normal", // "normal" (WebSocket) | "demo" (messages internes)
@@ -41,6 +15,10 @@ export default function DialogueOrb({
   className,
   size = 180,
   modeStyles,
+  isActive = true,
+  showOrb,
+  renderOrb,
+  modeOverride,
 }) {
   const [addMessage, setAddMessage] = useState(null);
   const timersRef = useRef([]);
@@ -76,7 +54,7 @@ export default function DialogueOrb({
     clearTimers();
 
     const scheduleNext = (first = false) => {
-      const delay = first ? DEMO_FIRST_DELAY : getRandomDelay();
+      const delay = first ? DEMO_FIRST_DELAY : getRandomDelay(DEMO_MIN_DELAY, DEMO_MAX_DELAY);
       const timer = setTimeout(() => {
         const line = getRandomLine(TEST_DIALOGUE_LINES);
         if (line && addMessage) {
@@ -113,7 +91,11 @@ export default function DialogueOrb({
   }, [addMessage, sessionId, closeSocket]);
 
   useEffect(() => {
-    if (!addMessage) return;
+    if (!addMessage || !isActive) {
+      clearTimers();
+      closeSocket();
+      return;
+    }
 
     if (mode === "demo") {
       startDemo();
@@ -126,13 +108,25 @@ export default function DialogueOrb({
     return () => {
       closeSocket();
     };
-  }, [mode, addMessage, sessionId, startDemo, startSocket, clearTimers, closeSocket]);
+  }, [
+    mode,
+    addMessage,
+    sessionId,
+    startDemo,
+    startSocket,
+    clearTimers,
+    closeSocket,
+    isActive,
+  ]);
 
   return (
     <OrbLogic
       size={size}
       className={className}
       modeStyles={modeStyles}
+      showOrb={showOrb}
+      renderOrb={renderOrb}
+      modeOverride={modeOverride}
       registerAddMessage={registerAddMessage}
     />
   );

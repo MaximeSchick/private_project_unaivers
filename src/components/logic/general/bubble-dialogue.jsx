@@ -12,6 +12,7 @@ export function useBubbleDialogue({
 } = {}) {
   const [messages, setMessages] = useState([]);
   const timeoutsRef = useRef([]);
+  const typingCountRef = useRef(0);
 
   // Nettoyage des timeouts au demontage
   useEffect(() => {
@@ -29,7 +30,10 @@ export function useBubbleDialogue({
       const truncated =
         safeText.length > maxChars ? safeText.slice(0, maxChars) + "..." : safeText;
 
-      if (onStartTyping) onStartTyping();
+      typingCountRef.current += 1;
+      if (typingCountRef.current === 1 && onStartTyping) {
+        onStartTyping();
+      }
 
       // On ajoute le message, en supprimant l'eventuel plus ancien si on depasse maxMessages
       setMessages((prev) => {
@@ -60,7 +64,10 @@ export function useBubbleDialogue({
           timeoutsRef.current.push(t);
         } else {
           // fin du typing
-          if (onStopTyping) onStopTyping();
+          typingCountRef.current = Math.max(0, typingCountRef.current - 1);
+          if (typingCountRef.current === 0 && onStopTyping) {
+            onStopTyping();
+          }
 
           // Apres visibleDuration -> animation de sortie (shrink + fade)
           const fadeTimeout = setTimeout(() => {

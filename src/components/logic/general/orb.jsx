@@ -3,28 +3,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import { cn } from "../../../lib/utils";
 import OrbUI from "../../ui/general/orb";
 import BubbleDialogueUI from "../../ui/general/bubble-dialogue";
+import { ORB_MODE_STYLES } from "../../ui/general/orb-mode-styles";
 import { useBubbleDialogue } from "./bubble-dialogue";
-
-// Couleurs par mode
-const DEFAULT_MODE_STYLES = {
-  idle: {
-    primary: "rgba(255,120,120,0.8)",
-    secondary: "rgba(255,180,180,0.7)",
-  },
-  thinking: {
-    primary: "rgba(244,114,182,0.9)",
-    secondary: "rgba(251,113,133,0.8)",
-  },
-  speaking: {
-    primary: "rgba(252,165,165,1)",
-    secondary: "rgba(248,113,113,0.95)",
-  },
-};
 
 export default function OrbLogic({
   size = 180,
   className,
-  modeStyles = DEFAULT_MODE_STYLES,
+  modeStyles = ORB_MODE_STYLES,
+  showOrb = true,
+  renderOrb,
+  modeOverride,
   registerAddMessage, // callback fourni par la couche de dialogue
 }) {
   const [mode, setMode] = useState("idle");
@@ -48,8 +36,9 @@ export default function OrbLogic({
     }
   }, [registerAddMessage, addMessage]);
 
+  const resolvedMode = modeOverride || mode;
   const currentStyle =
-    modeStyles[mode] || modeStyles.idle || DEFAULT_MODE_STYLES.idle;
+    modeStyles[resolvedMode] || modeStyles.idle || ORB_MODE_STYLES.idle;
 
   // Zone reservee pour garder le chat fixe et permettre ~3 bulles sous l'orbe
   const bubbleZoneHeight = Math.max(size * 0.7, 100);
@@ -66,12 +55,23 @@ export default function OrbLogic({
           className="relative z-10"
           style={{ marginBottom: gapBetweenOrbAndBubbles }}
         >
-          <OrbUI
-            size={size}
-            mode={mode}
-            primaryColor={currentStyle.primary}
-            secondaryColor={currentStyle.secondary}
-          />
+          {showOrb
+            ? typeof renderOrb === "function"
+              ? renderOrb({
+                  size,
+                  mode: resolvedMode,
+                  primaryColor: currentStyle.primary,
+                  secondaryColor: currentStyle.secondary,
+                })
+              : (
+                <OrbUI
+                  size={size}
+                  mode={resolvedMode}
+                  primaryColor={currentStyle.primary}
+                  secondaryColor={currentStyle.secondary}
+                />
+              )
+            : null}
         </div>
 
         <div className="w-full flex justify-center" style={{ minHeight: bubbleZoneHeight }}>

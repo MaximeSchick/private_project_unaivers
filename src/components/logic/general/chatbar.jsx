@@ -2,11 +2,20 @@
 import React, { useEffect, useState } from "react";
 import ChatBarUI from "../../ui/general/chatbar";
 import { createChatWebSocket } from "../../../services/websocket";
+import { extractTextFromEvent } from "../../../lib/chat-utils";
 
 export default function ChatBarLogic({
   sessionId,
   userRole = "player",
   placeholder = "Decris ton action...",
+  onSend,
+  onAiMessage,
+  onAiClick,
+  onToggleView,
+  showToggleView = false,
+  toggleDisabled = false,
+  toggleLabel,
+  showAiButton = true,
 }) {
   const [inputValue, setInputValue] = useState("");
   const [socket, setSocket] = useState(null);
@@ -14,9 +23,8 @@ export default function ChatBarLogic({
 
   const isSpectator = userRole === "spectator";
 
-  // WebSocket
   useEffect(() => {
-    // MODE DEMO : pas de WebSocket pour la session "demo-session"
+    // Demo sessions do not open a socket.
     if (!sessionId || sessionId === "demo-session") {
       setSocket(null);
       return;
@@ -28,8 +36,10 @@ export default function ChatBarLogic({
         console.log("WebSocket ouvert");
       },
       onMessage: (event) => {
-        // à brancher sur l'UI si besoin d'historique de chat
-        console.debug("Message recu", event.data);
+        const text = extractTextFromEvent(event);
+        if (text && onAiMessage) {
+          onAiMessage(text);
+        }
       },
       onClose: () => {
         console.log("WebSocket ferme");
@@ -45,13 +55,11 @@ export default function ChatBarLogic({
       ws?.close();
       setSocket(null);
     };
-  }, [sessionId]);
+  }, [sessionId, onAiMessage]);
 
-  // Gestion de l’animation de glow
   useEffect(() => {
     if (!animateChatInput) return;
 
-    // durée alignée sur l’anim CSS (~1.2s)
     const t = setTimeout(() => {
       setAnimateChatInput(false);
     }, 1200);
@@ -63,17 +71,22 @@ export default function ChatBarLogic({
     e.preventDefault();
     const trimmed = inputValue.trim();
     const isReady = socket && socket.readyState === WebSocket.OPEN;
-    if (!isReady || !trimmed || isSpectator) return;
+    if (!trimmed || isSpectator) return;
 
-    socket.send(JSON.stringify({ content: trimmed }));
+    if (isReady) {
+      socket.send(JSON.stringify({ content: trimmed }));
+    }
+
     setInputValue("");
 
-    // lance le glow + dégradé
+    if (onSend) {
+      onSend(trimmed);
+    }
+
     setAnimateChatInput(true);
   }
 
   function handleKeyDown(e) {
-    // Enter = envoyer, Shift+Enter = saut de ligne
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
@@ -81,7 +94,9 @@ export default function ChatBarLogic({
   }
 
   function handleAiClick() {
-    console.log("AI button clicked");
+    if (onAiClick) {
+      onAiClick();
+    }
   }
 
   return (
@@ -91,9 +106,14 @@ export default function ChatBarLogic({
       onSubmit={handleSubmit}
       onKeyDown={handleKeyDown}
       onAiClick={handleAiClick}
+      onToggleView={onToggleView}
+      showToggleView={showToggleView}
+      toggleDisabled={toggleDisabled}
+      toggleLabel={toggleLabel}
       userRole={userRole}
       placeholder={placeholder}
       animateChatInput={animateChatInput}
+      showAiButton={showAiButton}
     />
   );
 }
