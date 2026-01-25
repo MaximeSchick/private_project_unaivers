@@ -40,7 +40,7 @@ export default function ChatBarUI({
     <>
       <style>{chatbarGlowStyles}</style>
 
-      <div className="w-full flex flex-col max-h-[80vh] mt-6">
+      <div className="w-full flex flex-col max-h-[80vh] mt-2">
         <form onSubmit={onSubmit}>
           <div
             className={`
@@ -116,6 +116,20 @@ export default function ChatBarUI({
                     <i className="fa-regular fa-comment text-sm" />
                     <span className="text-sm">Qui suis-je ?</span>
                   </button>
+
+                  {showAiButton && (
+                    <button
+                      type="button"
+                      onClick={onAiClick}
+                      disabled={isSpectator}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-full bg-black/50 hover:bg-white/10 text-white/80 border border-white/10 transition-colors duration-200 ${
+                        isSpectator ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      }`}
+                    >
+                      <i className="fa-regular fa-bolt text-sm" />
+                      <span className="text-sm">Afficher la suite</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Boutons droite */}
@@ -132,19 +146,6 @@ export default function ChatBarUI({
                       }`}
                     >
                       <i className="fa-regular fa-comments text-xl pt-1" />
-                    </button>
-                  )}
-
-                  {showAiButton && (
-                    <button
-                      type="button"
-                      onClick={onAiClick}
-                      disabled={isSpectator}
-                      className={`bg-black/50 rounded-full p-2 hover:bg-white/10 transition-colors duration-200 text-white/80 border border-white/10 ${
-                        isSpectator ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                      }`}
-                    >
-                      <i className="fa-regular fa-bolt text-xl pt-1" />
                     </button>
                   )}
 

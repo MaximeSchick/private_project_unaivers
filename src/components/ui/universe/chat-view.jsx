@@ -1,5 +1,5 @@
 ﻿// src/components/ui/universe/chat-view.jsx
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useLayoutEffect, useMemo, useRef } from "react";
 import { cn } from "../../../lib/utils";
 import MessageOrb, {
   MESSAGE_ORB_SIZE,
@@ -121,7 +121,7 @@ export default function ChatView({
     return null;
   }, [messages]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isActive) return;
     const node = scrollRef.current;
     if (!node) return;

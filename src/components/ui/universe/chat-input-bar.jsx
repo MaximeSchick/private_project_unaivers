@@ -12,8 +12,8 @@ export default function ChatInputBar({
   isSplit,
   isPresence,
 }) {
-  const showAiButton = !isPresence && !isSplit;
-  const showToggleView = !isSplit;
+  const showAiButton = !isSplit && hasMessages;
+  const showToggleView = !isSplit && hasMessages;
   const toggleDisabled = !hasMessages;
   const toggleLabel = isPresence
     ? "Passer en vue chat"

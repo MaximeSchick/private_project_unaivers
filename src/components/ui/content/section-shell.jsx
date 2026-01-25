@@ -3,7 +3,8 @@ import React from "react";
 import { cn } from "../../../lib/utils";
 
 const toneClasses = {
-  plain: "bg-white",
+  plain:
+    "bg-[radial-gradient(120%_120%_at_50%_0%,#ffffff_0%,#f5f6f8_55%,#eef1f5_100%)]",
   mist: "bg-gradient-to-b from-neutral-50 via-white to-neutral-50",
   cloud: "bg-gradient-to-b from-white via-neutral-50 to-white",
   graphite: "bg-neutral-900 text-white",

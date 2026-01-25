@@ -11,7 +11,7 @@ export default function SplitLayout({ isSplit, left, right }) {
     >
       <div
         className={cn(
-          "flex w-full flex-col gap-6 transition-[max-width] duration-500 ease-out",
+          "flex w-full flex-col gap-4 transition-[max-width] duration-500 ease-out",
           isSplit ? "lg:flex-1 lg:max-w-none" : "lg:max-w-4xl"
         )}
       >
